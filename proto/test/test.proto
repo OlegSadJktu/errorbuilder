@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package test;
+
+import "response.proto";
+
+option go_package = "/test";
+
+service Hello {
+  rpc GetHello(GetHelloRequest) returns (GetHelloResponse) {}
+}
+
+enum GetHelloErrorCode {
+  GET_HELLO_ERROR_CODE_UNSPECIFIED = 0;
+  GET_HELLO_ERROR_CODE_VALIDATION = 1;
+
+
+}
+
+message GetHelloError {
+  GetHelloErrorCode error_code = 1;
+  string error_message = 2;
+}
+
+message GetHelloRequest {
+
+}
