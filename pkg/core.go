@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	"slices"
 
 	"google.golang.org/protobuf/compiler/protogen"
 )
@@ -30,11 +31,20 @@ func buildErrorBuilder(methodName string) string {
 }
 
 func GenerateErrorBuilderMethods(g *protogen.GeneratedFile, src *protogen.File) {
+	var enums []string
+	for _, enum := range src.Enums {
+		name := string(enum.Desc.Name())
+		enums = append(enums, name)
+	}
+
 	for _, service := range src.Services {
 		for _, method := range service.Methods {
 			name := method.GoName
-			formatedFunc := buildErrorBuilder(name)
-			g.P(formatedFunc)
+			errorName := name + "ErrorCode"
+			if slices.Contains(enums, errorName) {
+				formatedFunc := buildErrorBuilder(name)
+				g.P(formatedFunc)
+			}
 		}
 	}
 }
