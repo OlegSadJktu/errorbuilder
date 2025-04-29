@@ -8,10 +8,18 @@ import (
 func main() {
 
 	protogen.Options{}.Run(func(gen *protogen.Plugin) error {
+		alreadyGenerated := make(map[string]bool)
 		for _, f := range gen.Files {
 			if !f.Generate {
 				continue
 			}
+			if f.Proto.Package == nil {
+				continue
+			}
+			if _, ok := alreadyGenerated[*f.Proto.Package]; ok {
+				continue
+			}
+			alreadyGenerated[*f.Proto.Package] = true
 
 			generateFile(gen, f)
 		}
